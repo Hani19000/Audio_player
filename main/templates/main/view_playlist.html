@@ -1,0 +1,438 @@
+{% extends 'main/base.html' %}
+
+{% block heading %}
+<title>{{ playlist.name }} | Quranstream</title>
+<style>
+    :root {
+        --primary-green: #ffd700;
+        --primary-green-hover: #b89e14;
+        --bg-primary: #121212;
+        --bg-secondary: #181818;
+        --bg-hover: #282828;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+    }
+
+    body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        padding-bottom: 120px;
+    }
+
+    /* Header playlist */
+    .playlist-header {
+        background: linear-gradient(180deg, rgba(255, 217, 0, 0.836) 0%, var(--bg-primary) 100%);
+        padding: 80px 24px 24px;
+        margin-bottom: 24px;
+    }
+
+    .playlist-header-content {
+        max-width: 1800px;
+        margin: 0 auto;
+        display: flex;
+        align-items: flex-end;
+        gap: 24px;
+    }
+
+    .playlist-cover {
+        width: 232px;
+        height: 232px;
+        background: linear-gradient(135deg, var(--primary-green) 0%, #b6b91d 100%);
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(255, 217, 0, 0.918);
+        flex-shrink: 0;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease;
+    }
+
+    .playlist-cover:hover {
+        transform: scale(1.02);
+    }
+
+    .playlist-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .playlist-cover-icon {
+        font-size: 5rem;
+        color: rgba(0, 0, 0, 0.2);
+    }
+
+    .playlist-name {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--text-primary);
+        margin: 0 0 16px;
+        letter-spacing: -0.04em;
+    }
+
+    /* Contrôles */
+    .playlist-controls {
+        max-width: 1800px;
+        margin: 0 auto;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .play-all-button {
+        width: 56px;
+        height: 56px;
+        background: var(--primary-green);
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 8px 16px rgba(255, 215, 0, 0.4);
+        transition: all 0.2s cubic-bezier(0.3, 0, 0.4, 1);
+        text-decoration: none;
+    }
+
+    .play-all-button::before {
+        content: '';
+        width: 0;
+        height: 0;
+        border-left: 16px solid #000000;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        margin-left: 3px;
+    }
+
+    .play-all-button:hover {
+        background: var(--primary-green-hover);
+        transform: scale(1.08);
+        box-shadow: 0 12px 24px rgba(255, 215, 0, 0.5);
+    }
+
+    .shuffle-toggle {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 10px 24px;
+        font-size: 0.875rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .shuffle-toggle:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        color: var(--text-primary);
+        transform: translateY(-2px);
+    }
+
+    .shuffle-toggle.active {
+        border-color: var(--primary-green);
+        color: var(--primary-green);
+        background: rgba(255, 215, 0, 0.1);
+    }
+
+    /* Table responsive */
+    .songs-container {
+        max-width: 1800px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .songs-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .songs-table thead th {
+        text-align: left;
+        padding: 12px 16px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .song-row {
+        transition: background 0.2s ease;
+        border-radius: 4px;
+    }
+
+    .song-row:hover {
+        background: var(--bg-hover);
+    }
+
+    .song-row.playing {
+        background: rgba(255, 215, 0, 0.1);
+    }
+
+    .song-row td {
+        padding: 12px 16px;
+        border: none;
+    }
+
+    /* Bouton play dans le numéro */
+    .song-number-cell {
+        position: relative;
+        text-align: center;
+        width: 60px;
+    }
+
+    .song-number {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        text-align: center;
+    }
+
+    .song-play-icon {
+        display: none;
+        width: 32px;
+        height: 32px;
+        background: var(--primary-green);
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.2s ease;
+        color: #000000;
+        font-size: 14px;
+    }
+
+    .song-play-icon::before {
+        content: '▶';
+    }
+
+    .song-row:hover .song-number {
+        display: none;
+    }
+
+    .song-row:hover .song-play-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .song-play-icon:hover {
+        background: var(--primary-green-hover);
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .song-row.playing .song-number {
+        color: var(--primary-green);
+    }
+
+    .song-title-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .song-cover-mini {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .song-title {
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .song-row.playing .song-title {
+        color: var(--primary-green);
+    }
+
+    .song-artist {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 24px;
+        color: var(--text-secondary);
+    }
+
+    /* Responsive Mobile */
+    @media (max-width: 1024px) {
+        .playlist-cover {
+            width: 192px;
+            height: 192px;
+        }
+
+        .playlist-name {
+            font-size: 2.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .playlist-header-content {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .playlist-cover {
+            width: 160px;
+            height: 160px;
+        }
+
+        .playlist-name {
+            font-size: 2rem;
+        }
+
+        /* Table en mode liste sur mobile */
+        .songs-table thead {
+            display: none;
+        }
+
+        .song-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .song-row td {
+            display: inline-block;
+            padding: 0;
+        }
+
+        /* Bouton play toujours visible sur mobile */
+        .song-number-cell {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+        }
+
+        .song-play-icon {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            position: static;
+            transform: none;
+            width: 48px;
+            height: 48px;
+        }
+
+        .song-play-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .song-number {
+            display: none !important;
+        }
+
+        .song-row td:nth-child(2) {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .song-row td:nth-child(3) {
+            display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .playlist-controls {
+            padding: 16px;
+        }
+
+        .play-all-button {
+            width: 48px;
+            height: 48px;
+        }
+
+        .shuffle-toggle {
+            font-size: 0.8rem;
+            padding: 8px 16px;
+        }
+
+        .songs-container {
+            padding: 0 12px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- Header -->
+<div class="playlist-header">
+    <div class="playlist-header-content">
+        <div class="playlist-cover">
+            {% if playlist.song.first %}
+                <img src="{{ playlist.song.first.cover_image.url }}" alt="{{ playlist.name }}">
+            {% else %}
+                <span class="playlist-cover-icon">♫</span>
+            {% endif %}
+        </div>
+        <div>
+            <p style="font-size: 0.875rem; font-weight: 700; color: var(--text-primary); margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.1em;">Playlist</p>
+            <h1 class="playlist-name">{{ playlist.name }}</h1>
+            <p style="color: var(--text-secondary); margin: 0;">{{ playlist.song.count }} sourate{% if playlist.song.count > 1 %}s{% endif %}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Liste des sourates -->
+<div class="songs-container">
+    {% if playlist.song.count > 0 %}
+        <table class="songs-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Titre</th>
+                    <th>Artiste</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for song in playlist.song.all %}
+                    <tr class="song-row {% if play_song and play_song.id == song.id %}playing{% endif %}">
+                        <td class="song-number-cell">
+                            <span class="song-number">{{ forloop.counter }}</span>
+                            <a href="?play={{ song.id }}&shuffle={{ shuffle }}">
+                                <button class="song-play-icon" aria-label="Lire {{ song.title }}"></button>
+                            </a>
+                        </td>
+                        <td>
+                            <div class="song-title-cell">
+                                <img src="{{ song.cover_image.url }}" alt="{{ song.title }}" class="song-cover-mini" loading="lazy">
+                                <p class="song-title">{{ song.title }}</p>
+                            </div>
+                        </td>
+                        <td>
+                            <p class="song-artist">{{ song.artist }}</p>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.5;">🎵</div>
+            <p style="font-size: 1rem; margin: 0;">Cette playlist est vide. Ajoutez des sourates depuis la page d'accueil.</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

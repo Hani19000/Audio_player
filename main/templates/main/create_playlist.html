@@ -1,0 +1,316 @@
+{% extends 'main/base.html' %}
+
+{% block heading %}
+<title>Quranstream | Création de playlist</title>
+<style>
+    body {
+        background: #121212;
+        color: #ffffff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .create-playlist-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 60px 24px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .create-header {
+        text-align: center;
+        margin-bottom: 48px;
+    }
+
+    .create-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #ffd700 0%, #b89e14 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+    }
+
+    .create-icon::before {
+        content: '♫';
+        font-size: 2.5rem;
+        color: #000000;
+    }
+
+    .create-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: #ffffff;
+        margin: 0 0 12px 0;
+        letter-spacing: -0.04em;
+    }
+
+    .create-subtitle {
+        font-size: 1rem;
+        color: #b3b3b3;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .create-playlist-form {
+        background: #181818;
+        border-radius: 16px;
+        padding: 48px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-group {
+        margin-bottom: 32px;
+        width: 100%;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 12px;
+        letter-spacing: 0.02em;
+        text-align: center;
+    }
+
+    .create-playlist-form input[type="text"] {
+        width: 100%;
+        padding: 18px 24px;
+        border: 2px solid #333333;
+        border-radius: 8px;
+        background-color: #121212;
+        color: #ffffff;
+        font-size: 1.25rem;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .create-playlist-form input[type="text"]:focus {
+        outline: none;
+        border-color: #ffd700;
+        background-color: #181818;
+    }
+
+    .create-playlist-form input[type="text"]::placeholder {
+        color: #6a6a6a;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 16px;
+        margin-top: 40px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .create-playlist-form button[type="submit"] {
+        min-width: 200px;
+        padding: 16px 48px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 32px;
+        background-color: #ffd700;
+        color: #000000;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        letter-spacing: 0.5px;
+    }
+
+    .create-playlist-form button[type="submit"]:hover {
+        background-color: #b89e14;
+        transform: scale(1.06);
+    }
+
+    .cancel-button {
+        min-width: 200px;
+        padding: 16px 48px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-radius: 32px;
+        background-color: transparent;
+        color: #b3b3b3;
+        border: 2px solid #535353;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .cancel-button:hover {
+        border-color: #ffffff;
+        color: #ffffff;
+        transform: scale(1.06);
+    }
+
+    .input-counter {
+        font-size: 0.8rem;
+        color: #6a6a6a;
+        text-align: center;
+        margin-top: 8px;
+    }
+
+    .tips-section {
+        margin-top: 40px;
+        padding-top: 32px;
+        border-top: 1px solid #282828;
+        width: 100%;
+    }
+
+    .tips-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0 0 16px 0;
+        text-align: center;
+    }
+
+    .tips-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .tips-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 10px;
+        font-size: 0.875rem;
+        color: #b3b3b3;
+        max-width: 400px;
+    }
+
+    .tips-item::before {
+        content: '•';
+        color: #ffd700;
+        font-weight: 700;
+        font-size: 1.2rem;
+        line-height: 1.2;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .create-playlist-container {
+            padding: 40px 16px;
+        }
+
+        .create-title {
+            font-size: 2rem;
+        }
+
+        .create-playlist-form {
+            padding: 32px 24px;
+        }
+
+        .button-group {
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .create-playlist-container {
+            padding: 24px 12px;
+        }
+
+        .create-icon {
+            width: 60px;
+            height: 60px;
+        }
+
+        .create-icon::before {
+            font-size: 2rem;
+        }
+
+        .create-title {
+            font-size: 1.75rem;
+        }
+
+        .create-subtitle {
+            font-size: 0.875rem;
+        }
+
+        .create-playlist-form {
+            padding: 24px 16px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="create-playlist-container">
+    <div class="create-header">
+        <div class="create-icon"></div>
+        <h1 class="create-title">Créer une playlist</h1>
+        <p class="create-subtitle">Donnez un nom à votre nouvelle playlist</p>
+    </div>
+
+    <form method="post" class="create-playlist-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="playlist-name" class="form-label">Nom de la playlist</label>
+            <input
+                id="playlist-name"
+                placeholder="le nom de ma playlist"
+                type="text"
+                name="name-playlist"
+                maxlength="100"
+                required
+                autocomplete="off"
+            >
+            <div class="input-counter">
+                <span id="char-count">0</span> / 100 caractères
+            </div>
+        </div>
+
+        <div class="button-group">
+            <a href="{% url 'all_playlists' %}" class="cancel-button">Annuler</a>
+            <button type="submit">Créer la playlist</button>
+        </div>
+
+        <div class="tips-section">
+            <h3 class="tips-title">💡 Conseils</h3>
+            <ul class="tips-list">
+                <li class="tips-item">Choisissez un nom unique et descriptif</li>
+                <li class="tips-item">Vous pourrez ajouter des sourates après la création</li>
+                <li class="tips-item">Vous pouvez modifier le nom plus tard</li>
+            </ul>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Compteur de caractères
+    const input = document.getElementById('playlist-name');
+    const counter = document.getElementById('char-count');
+
+    input.addEventListener('input', function() {
+        counter.textContent = this.value.length;
+    });
+
+    // Focus automatique sur l'input au chargement
+    window.addEventListener('load', function() {
+        input.focus();
+    });
+</script>
+{% endblock %}

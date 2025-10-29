@@ -1,0 +1,341 @@
+{% extends 'main/base.html' %}
+
+{% block heading %}
+<title>Quranstream | Inscription</title>
+<style>
+    body {
+        background: linear-gradient(180deg, #121212 0%, #000000 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .auth-container {
+        max-width: 450px;
+        margin: 0 auto;
+        padding: 40px 24px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .auth-logo {
+        text-align: center;
+        margin-bottom: 48px;
+    }
+
+    .auth-logo-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 24px;
+        background: linear-gradient(135deg, #ffd700 0%, #b89e14 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+    }
+
+    .auth-logo-icon::before {
+        content: '♫';
+        font-size: 2.5rem;
+        color: #000000;
+    }
+
+    .auth-title {
+        font-size: 3rem;
+        font-weight: 900;
+        color: #ffffff;
+        margin: 0 0 12px 0;
+        letter-spacing: -0.04em;
+        text-align: center;
+    }
+
+    .auth-subtitle {
+        font-size: 1rem;
+        color: #b3b3b3;
+        margin: 0 0 40px 0;
+        text-align: center;
+    }
+
+    .authentication-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        background: transparent;
+        padding: 0;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-label {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: 0.02em;
+    }
+
+    .authentication-form input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #333333;
+        border-radius: 8px;
+        background-color: #121212;
+        color: #ffffff;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .authentication-form input:focus {
+        outline: none;
+        border-color: #ffd700;
+        background-color: #181818;
+    }
+
+    .authentication-form input::placeholder {
+        color: #6a6a6a;
+    }
+
+    .password-requirements {
+        font-size: 0.75rem;
+        color: #6a6a6a;
+        margin-top: 4px;
+    }
+
+    .authentication-form button {
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 24px;
+        background-color: #ffd700;
+        color: #000000;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        letter-spacing: 0.5px;
+        margin-top: 8px;
+    }
+
+    .authentication-form button:hover {
+        background-color: #b89e14;
+        transform: scale(1.02);
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 32px 0;
+        color: #6a6a6a;
+        font-size: 0.875rem;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #333333;
+    }
+
+    .divider span {
+        padding: 0 16px;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 32px;
+        padding-top: 32px;
+        border-top: 1px solid #282828;
+    }
+
+    .auth-footer-text {
+        font-size: 0.875rem;
+        color: #b3b3b3;
+        margin: 0 0 12px 0;
+    }
+
+    .auth-footer-link {
+        color: #ffffff;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .auth-footer-link:hover {
+        color: #ffd700;
+    }
+
+    .terms-text {
+        font-size: 0.75rem;
+        color: #6a6a6a;
+        text-align: center;
+        margin-top: 24px;
+        line-height: 1.5;
+    }
+
+    .terms-text a {
+        color: #b3b3b3;
+        text-decoration: underline;
+        transition: color 0.2s;
+    }
+
+    .terms-text a:hover {
+        color: #ffffff;
+    }
+
+    .error-message {
+        background: rgba(255, 50, 50, 0.1);
+        border: 1px solid rgba(255, 50, 50, 0.3);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: #ff6b6b;
+        font-size: 0.875rem;
+        margin-bottom: 16px;
+        display: none;
+    }
+
+    .error-message.show {
+        display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .auth-container {
+            padding: 24px 16px;
+        }
+
+        .auth-title {
+            font-size: 2.5rem;
+        }
+
+        .auth-logo {
+            margin-bottom: 32px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .auth-container {
+            padding: 16px 12px;
+        }
+
+        .auth-logo-icon {
+            width: 60px;
+            height: 60px;
+        }
+
+        .auth-logo-icon::before {
+            font-size: 2rem;
+        }
+
+        .auth-title {
+            font-size: 2rem;
+        }
+
+        .auth-subtitle {
+            font-size: 0.875rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-logo">
+        <div class="auth-logo-icon"></div>
+        <h1 class="auth-title">S'inscrire</h1>
+        <p class="auth-subtitle">Créez votre compte pour commencer à écouter</p>
+    </div>
+
+    <div class="error-message" id="error-message">
+        Les mots de passe ne correspondent pas
+    </div>
+
+    <form method="post" class="authentication-form" onsubmit="return validateForm()">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="username" class="form-label">Nom d'utilisateur</label>
+            <input
+                id="username"
+                placeholder="Choisissez un nom d'utilisateur"
+                type="text"
+                name="username"
+                minlength="3"
+                maxlength="150"
+                required
+                autocomplete="username"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input
+                id="password"
+                placeholder="Créez un mot de passe"
+                type="password"
+                name="password"
+                minlength="6"
+                required
+                autocomplete="new-password"
+            >
+            <p class="password-requirements">Au moins 6 caractères</p>
+        </div>
+
+        <div class="form-group">
+            <label for="password2" class="form-label">Confirmer le mot de passe</label>
+            <input
+                id="password2"
+                placeholder="Confirmez votre mot de passe"
+                type="password"
+                name="password2"
+                minlength="6"
+                required
+                autocomplete="new-password"
+            >
+        </div>
+
+        <button type="submit">Créer un compte</button>
+    </form>
+
+    <div class="terms-text">
+        En vous inscrivant, vous acceptez nos
+        <a href="#">Conditions d'utilisation</a> et notre
+        <a href="#">Politique de confidentialité</a>.
+    </div>
+
+    <div class="auth-footer">
+        <p class="auth-footer-text">Vous avez déjà un compte ?</p>
+        <a href="{% url 'login_user' %}" class="auth-footer-link">Se connecter</a>
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        const password = document.getElementById('password').value;
+        const password2 = document.getElementById('password2').value;
+        const errorMessage = document.getElementById('error-message');
+
+        if (password !== password2) {
+            errorMessage.classList.add('show');
+            document.getElementById('password2').focus();
+            return false;
+        }
+
+        errorMessage.classList.remove('show');
+        return true;
+    }
+
+    // Masquer le message d'erreur quand l'utilisateur tape
+    document.getElementById('password2').addEventListener('input', function() {
+        document.getElementById('error-message').classList.remove('show');
+    });
+</script>
+{% endblock %}
